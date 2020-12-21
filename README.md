@@ -1,3 +1,10 @@
+Steps to run:
+
+1. Run MongoDB (Read "mongo-info.txt")
+2. Run Back End (npm run start:server)
+3. Run Front End (npm start)
+
+
 # MeanCourse
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.3.9.

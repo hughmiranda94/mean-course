@@ -1,9 +1,0 @@
-user: hugo
-password: mcOIpe5JAYTXn20n
-
-command to connect to db: mongo "mongodb+srv://cluster0-v2jop.mongodb.net/test" --username hugo
-
-//mongodb+srv://hugo:<password>@cluster0-v2jop.mongodb.net/<dbname>?retryWrites=true&w=majority
-//mcOIpe5JAYTXn20n
-
-mcOIpe5JAYTXn20n

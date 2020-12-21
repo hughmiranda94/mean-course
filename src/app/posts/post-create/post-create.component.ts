@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { PostsService } from '../post.service';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Post } from '../post.model';
 import { mimeType } from './mime-type.validator';
+import { Subscription } from 'rxjs';
+import { AuthService } from 'src/app/auth/auth.service';
 
 @Component({
   selector: 'app-post-create',
@@ -11,7 +13,7 @@ import { mimeType } from './mime-type.validator';
   styleUrls: ['./post-create.component.scss']
 })
 
-export class PostCreateComponent implements OnInit{
+export class PostCreateComponent implements OnInit, OnDestroy {
   enteredTitle = '';
   enteredContent = '';
   private modes = {
@@ -20,14 +22,24 @@ export class PostCreateComponent implements OnInit{
   };
   private currentMode = this.modes.CREATE;
   private postId: string;
+  private authStatusSub: Subscription;
   public post: Post;
   public isLoading = false;
   form: FormGroup;
   imagePreview: string | ArrayBuffer;
 
-  constructor(public postsService: PostsService, public route: ActivatedRoute) {}
+  constructor(
+    public postsService: PostsService,
+    public route: ActivatedRoute,
+    private authService: AuthService
+    ) {}
 
   ngOnInit(): void {
+    this.authStatusSub = this.authService.getAuthStatusListener().subscribe(
+      authStatus => {
+        this.isLoading = false;
+      }
+    );
     this.form = new FormGroup({
       title: new FormControl(
         null,
@@ -53,7 +65,8 @@ export class PostCreateComponent implements OnInit{
               id: postData._id,
               title: postData.title,
               content: postData.content,
-              imagePath: postData.imagePath
+              imagePath: postData.imagePath,
+              creator: postData.creator
             };
             this.form.setValue(
               {
@@ -104,5 +117,9 @@ export class PostCreateComponent implements OnInit{
       this.imagePreview = reader.result;
     };
     reader.readAsDataURL(file);
+  }
+
+  ngOnDestroy() {
+    this.authStatusSub.unsubscribe();
   }
 }
